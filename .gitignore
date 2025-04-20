@@ -1,0 +1,6 @@
+.env
+.idea/
+build/
+generated/
+node_modules/
+.DS_STORE

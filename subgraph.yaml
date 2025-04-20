@@ -1,0 +1,29 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Sheepy404
+    network: abstract-testnet
+    source:
+      abi: Sheepy404
+      address: "0x37473f416D505fD76d02B4B515c09D6E4b416FD9"
+      startBlock: 8934740
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - Asset
+      abis:
+        - name: Sheepy404
+          file: ./abis/Sheepy404.json
+      eventHandlers:
+        - event: Reveal(indexed uint256)
+          handler: handleReveal
+        - event: Reroll(indexed uint256)
+          handler: handleReroll
+        - event: Reset(indexed uint256)
+          handler: handleReset
+      file: ./src/sheepy404.ts

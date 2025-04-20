@@ -1,0 +1,11 @@
+type Token @entity {
+    id: ID!
+    asset: Asset
+    revealed: Boolean!
+    rerollCount: Int!
+}
+
+type Asset @entity {
+    id: ID!
+    assignedTo: Token
+}

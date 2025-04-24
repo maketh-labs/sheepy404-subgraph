@@ -1,5 +1,10 @@
-import { Reroll, Reset, Reveal } from '../generated/Sheepy404/Sheepy404'
-import { Asset, Token } from '../generated/schema'
+import {
+  AssetCount as AssetCountEvent,
+  Reroll,
+  Reset,
+  Reveal,
+} from '../generated/Sheepy404/Sheepy404'
+import { Asset, AssetCount, Token } from '../generated/schema'
 
 import { pickAvailableAssetId } from './utils'
 
@@ -95,4 +100,15 @@ export function handleReset(event: Reset): void {
     token.rerollCount = 0
     token.save()
   }
+}
+
+export function handleSetAssetCount(event: AssetCountEvent): void {
+  const assetCountId = 'assetCount'
+  let assetCount = AssetCount.load(assetCountId)
+  if (!assetCount) {
+    assetCount = new AssetCount(assetCountId)
+  }
+
+  assetCount.count = event.params.newAssetCount
+  assetCount.save()
 }

@@ -9,3 +9,8 @@ type Asset @entity {
     id: ID!
     assignedTo: Token
 }
+
+type AssetCount @entity {
+    id: ID!
+    count: BigInt!
+}

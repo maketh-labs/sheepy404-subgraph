@@ -166,6 +166,24 @@
   },
   {
     "type": "function",
+    "name": "freeReveal",
+    "inputs": [
+      {
+        "name": "tokenIds",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "signature",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "getSkipNFT",
     "inputs": [
       {
@@ -461,6 +479,19 @@
   },
   {
     "type": "function",
+    "name": "setAssetCount",
+    "inputs": [
+      {
+        "name": "newAssetCount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "setBaseURI",
     "inputs": [
       {
@@ -704,6 +735,19 @@
       },
       {
         "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "AssetCount",
+    "inputs": [
+      {
+        "name": "newAssetCount",
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"

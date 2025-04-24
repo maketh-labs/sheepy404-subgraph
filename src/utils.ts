@@ -1,12 +1,22 @@
 import { BigInt, ByteArray, Bytes, crypto } from '@graphprotocol/graph-ts'
 
-import { Asset } from '../generated/schema'
+import { Asset, AssetCount } from '../generated/schema'
 
 const INTERNAL_NONCE = 'dn404-v1-seed' as string
-const LOWEST_TOKEN_AND_ASSET_ID = 1 as i32
-const HIGHEST_TOKEN_AND_ASSET_ID = 10000 as i32
-const TOTAL_TOKEN_AND_ASSET_ID_COUNT =
-  HIGHEST_TOKEN_AND_ASSET_ID - LOWEST_TOKEN_AND_ASSET_ID + 1
+const LOWEST_ASSET_ID = 1 as i32
+const INITIAL_TOTAL_ASSET_COUNT = 10000
+
+function getTotalAssetCount(): i32 {
+  const assetCountId = 'assetCount'
+  let assetCount = AssetCount.load(assetCountId)
+  if (!assetCount) {
+    assetCount = new AssetCount(assetCountId)
+    assetCount.count = BigInt.fromI32(INITIAL_TOTAL_ASSET_COUNT)
+    assetCount.save()
+  }
+
+  return assetCount.count.toI32()
+}
 
 function computeSeed(txHash: Bytes, tokenId: BigInt): ByteArray {
   const combinedInput = txHash
@@ -18,14 +28,11 @@ function computeSeed(txHash: Bytes, tokenId: BigInt): ByteArray {
 export function pickAvailableAssetId(txHash: Bytes, tokenId: BigInt): i32 {
   const seed = computeSeed(txHash, tokenId)
   const seedValue = BigInt.fromUnsignedBytes(seed)
-  const startIndex = seedValue
-    .mod(BigInt.fromI32(TOTAL_TOKEN_AND_ASSET_ID_COUNT))
-    .toI32()
+  const totalAssetCount = getTotalAssetCount()
+  const startIndex = seedValue.mod(BigInt.fromI32(totalAssetCount)).toI32()
 
-  for (let i = 0; i < TOTAL_TOKEN_AND_ASSET_ID_COUNT; i++) {
-    const assetId =
-      ((startIndex + i) % TOTAL_TOKEN_AND_ASSET_ID_COUNT) +
-      LOWEST_TOKEN_AND_ASSET_ID
+  for (let i = 0; i < totalAssetCount; i++) {
+    const assetId = ((startIndex + i) % totalAssetCount) + LOWEST_ASSET_ID
 
     const assetIdString = assetId.toString()
     let asset = Asset.load(assetIdString)

@@ -26,4 +26,6 @@ dataSources:
           handler: handleReroll
         - event: Reset(indexed uint256)
           handler: handleReset
+        - event: AssetCount(uint256)
+          handler: handleSetAssetCount
       file: ./src/sheepy404.ts

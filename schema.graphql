@@ -14,3 +14,8 @@ type AssetCount @entity {
     id: ID!
     count: BigInt!
 }
+
+type AvailableAssetIds @entity {
+    id: ID!
+    assetIds: [Int!]!
+}

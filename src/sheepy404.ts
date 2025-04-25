@@ -8,7 +8,12 @@ import {
 } from '../generated/Sheepy404/Sheepy404'
 import { Asset, AssetCount, Token } from '../generated/schema'
 
-import { pickAvailableAssetId } from './utils'
+import {
+  addAssetIdToAvailable,
+  addNewAssetIdsToAvailable,
+  INITIAL_TOTAL_ASSET_COUNT,
+  pickAvailableAssetId,
+} from './utils'
 
 export function handleReveal(event: Reveal): void {
   const tokenId = event.params.tokenId
@@ -23,6 +28,11 @@ export function handleReveal(event: Reveal): void {
 
   if (!token.revealed) {
     const assetId = pickAvailableAssetId(event.transaction.hash, tokenId)
+
+    if (assetId == 0) {
+      throw new Error('No available asset IDs found for reveal')
+    }
+
     const assetIdString = assetId.toString()
 
     let asset = Asset.load(assetIdString)
@@ -52,12 +62,19 @@ export function handleReroll(event: Reroll): void {
   }
 
   if (token.asset) {
+    const assetId = pickAvailableAssetId(event.transaction.hash, tokenId)
+    if (assetId == 0) {
+      token.rerollCount = token.rerollCount + 1
+      token.save()
+      return
+    }
+
     const previousAsset = Asset.load(token.asset!)
     if (previousAsset) {
       previousAsset.assignedTo = null
       previousAsset.save()
+      addAssetIdToAvailable(parseInt(token.asset!, 10) as i32)
     }
-    const assetId = pickAvailableAssetId(event.transaction.hash, tokenId)
     const assetIdString = assetId.toString()
 
     let asset = Asset.load(assetIdString)
@@ -94,6 +111,7 @@ export function handleReset(event: Reset): void {
     if (previousAsset) {
       previousAsset.assignedTo = null
       previousAsset.save()
+      addAssetIdToAvailable(parseInt(token.asset!, 10) as i32)
     }
 
     token.asset = null
@@ -108,11 +126,14 @@ export function handleSetAssetCount(event: AssetCountEvent): void {
   let assetCount = AssetCount.load(assetCountId)
   if (!assetCount) {
     assetCount = new AssetCount(assetCountId)
-    assetCount.count = BigInt.zero()
+    assetCount.count = BigInt.fromI32(INITIAL_TOTAL_ASSET_COUNT)
   }
 
-  if (event.params.newAssetCount.gt(assetCount.count)) {
+  const oldCount = assetCount.count.toI32()
+  const newCount = event.params.newAssetCount.toI32()
+  if (newCount > oldCount) {
     assetCount.count = event.params.newAssetCount
+    addNewAssetIdsToAvailable(oldCount, newCount)
   }
   assetCount.save()
 }

@@ -1,3 +1,5 @@
+import { BigInt } from '@graphprotocol/graph-ts'
+
 import {
   AssetCount as AssetCountEvent,
   Reroll,
@@ -107,8 +109,11 @@ export function handleSetAssetCount(event: AssetCountEvent): void {
   let assetCount = AssetCount.load(assetCountId)
   if (!assetCount) {
     assetCount = new AssetCount(assetCountId)
+    assetCount.count = BigInt.zero()
   }
 
-  assetCount.count = event.params.newAssetCount
+  if (event.params.newAssetCount.gt(assetCount.count)) {
+    assetCount.count = event.params.newAssetCount
+  }
   assetCount.save()
 }

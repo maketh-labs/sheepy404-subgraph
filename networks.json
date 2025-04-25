@@ -1,20 +1,20 @@
 {
   "localhost": {
     "Sheepy404": {
-      "address": "0x37473f416D505fD76d02B4B515c09D6E4b416FD9",
-      "startBlock": 8934740
+      "address": "0xaf56388f71aD4D82fA3600000352B9e4ebBe7d64",
+      "startBlock": 9032870
     }
   },
   "abstract-testnet": {
     "Sheepy404": {
-      "address": "0x37473f416D505fD76d02B4B515c09D6E4b416FD9",
-      "startBlock": 8934740
+      "address": "0xaf56388f71aD4D82fA3600000352B9e4ebBe7d64",
+      "startBlock": 9032870
     }
   },
   "abstract-mainnet": {
     "Sheepy404": {
-      "address": "0x37473f416D505fD76d02B4B515c09D6E4b416FD9",
-      "startBlock": 8934740
+      "address": "0xaf56388f71aD4D82fA3600000352B9e4ebBe7d64",
+      "startBlock": 9032870
     }
   }
 }

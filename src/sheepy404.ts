@@ -57,23 +57,22 @@ export function handleReroll(event: Reroll): void {
       previousAsset.assignedTo = null
       previousAsset.save()
     }
+    const assetId = pickAvailableAssetId(event.transaction.hash, tokenId)
+    const assetIdString = assetId.toString()
+
+    let asset = Asset.load(assetIdString)
+    if (!asset) {
+      asset = new Asset(assetIdString)
+    }
+
+    token.asset = assetIdString
+    asset.assignedTo = tokenIdString
+
+    token.revealed = true
+    token.rerollCount = token.rerollCount + 1
+
+    asset.save()
   }
-
-  const assetId = pickAvailableAssetId(event.transaction.hash, tokenId)
-  const assetIdString = assetId.toString()
-
-  let asset = Asset.load(assetIdString)
-  if (!asset) {
-    asset = new Asset(assetIdString)
-  }
-
-  token.asset = assetIdString
-  asset.assignedTo = tokenIdString
-
-  token.revealed = true
-  token.rerollCount = token.rerollCount + 1
-
-  asset.save()
   token.save()
 }
 
